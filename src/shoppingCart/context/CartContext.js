@@ -17,7 +17,7 @@ const cartReducer = (state, action) => {
 
       if (existingProduct) {
         // If the product exists, update its quantity
-        existingProduct.count = existingProduct.count + 0.5;
+        existingProduct.count = existingProduct.count + 1;
 
         return { ...state };
       } else {
