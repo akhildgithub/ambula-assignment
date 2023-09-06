@@ -1,0 +1,49 @@
+// src/TodoContext.js
+import React, { createContext, useReducer, useContext } from 'react';
+
+const TodoContext = createContext();
+
+const initialState = {
+  tasks: [],
+};
+
+const todoReducer = (state, action) => {
+  switch (action.type) {
+    case 'ADD_TASK':
+      return { ...state, tasks: [...state.tasks, action.payload] };
+    case 'TOGGLE_TASK':
+      return {
+        ...state,
+        tasks: state.tasks.map((task) =>
+          task.id === action.payload
+            ? { ...task, completed: !task.completed }
+            : task
+        ),
+      };
+    case 'REMOVE_TASK':
+      return {
+        ...state,
+        tasks: state.tasks.filter((task) => task.id !== action.payload),
+      };
+    default:
+      return state;
+  }
+};
+
+export const TodoProvider = ({ children }) => {
+  const [state, dispatch] = useReducer(todoReducer, initialState);
+
+  return (
+    <TodoContext.Provider value={{ state, dispatch }}>
+      {children}
+    </TodoContext.Provider>
+  );
+};
+
+export const useTodo = () => {
+  const context = useContext(TodoContext);
+  if (!context) {
+    throw new Error('useTodo must be used within a TodoProvider');
+  }
+  return context;
+};
